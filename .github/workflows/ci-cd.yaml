@@ -19,11 +19,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Generate tag
+        run: echo "TAG=dev-$(date +'%Y-%m-%d').${{ github.run_number }}" >> $GITHUB_ENV
 
-      - name: Build image
+      - name: Build Docker Image
         run: |
-          docker build -t aysebeyaz/todo-app:latest ./app
+          docker build -t aysebeyaz/todo-app:$TAG .
+          docker build -t aysebeyaz/todo-app:latest .
 
       - name: Push image
         run: |
+          docker push aysebeyaz/todo-app:$TAG
           docker push aysebeyaz/todo-app:latest
